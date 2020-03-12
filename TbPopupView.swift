@@ -9,11 +9,30 @@
 import UIKit
 
 protocol TbPopupViewAnimationProtocol: AnyObject {
-    
+    /// 初始化配置动画驱动器
+    ///
+    /// - Parameters:
+    ///   - contentView: 自定义的弹框视图
+    ///   - backgroundView: 背景视图
+    ///   - containerView: 展示弹框的视图
+    /// - Returns: void
     func setup(contentView: UIView , backgroundView: TbBackgroundView, containerView: UIView)
-    
+    /// 处理展示动画
+    ///
+    /// - Parameters:
+    ///   - contentView: 自定义的弹框视图
+    ///   - backgroundView: 背景视图
+    ///   - animated: 是否需要动画
+    ///   - completion: 动画完成后的回调
+    /// - Returns: void
     func display(contentView: UIView, backgroundView: TbBackgroundView, animated: Bool, completion: @escaping () ->())
-    
+    /// 处理消失动画
+    ///
+    /// - Parameters:
+    ///   - contentView: 自定义的弹框视图
+    ///   - backgroundView: 背景视图
+    ///   - animated: 是否需要动画
+    ///   - completion: 动画完成后的回调
     func dismiss(contentView: UIView, backgroundView: TbBackgroundView, animated: Bool, completion: @escaping () ->())
 }
 
