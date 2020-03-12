@@ -42,9 +42,32 @@ public enum TbPopupViewBackgroundStyle {
 }
 
 /// 一个轻量级的自定义视图弹框框架，主要提供动画、背景的灵活配置，功能简单却强大
-/// 通过面对协议JXPopupViewAnimationProtocol，实现对动画的灵活配置
+/// 通过面对协议TbPopupViewAnimationProtocol，实现对动画的灵活配置
 /// 通过JXBackgroundView对背景进行自定义配置
 class TbPopupView: UIView {
+    
+    /*
+     举个例子
+     /////////////////////
+     ///////////////////B/
+     ////-------------////
+     ///|             |///
+     ///|             |///
+     ///|             |///
+     ///|             |///
+     ///|             |///
+     ///|      A      |///
+     ///|             |///
+     ///|             |///
+     ///|             |///
+     ///|_____________|///
+     /////////////////////
+     /////////////////////
+
+     - isDismissible  为YES时，点击区域B可以消失（前提是isPenetrable为false）
+     - isInteractive  为YES时，点击区域A可以触发contentView上的交互操作
+     - isPenetrable   为YES时，将会忽略区域B的交互操作
+     */
 
     public var isDismissible = false {
         didSet {
@@ -77,7 +100,12 @@ class TbPopupView: UIView {
         self.animator = animator
         backgroundView = TbBackgroundView(frame: .zero)
         
-        
+        /// 指定的s初始化器
+         ///
+         /// - Parameters:
+         ///   - containerView: 展示弹框的视图，可以是window、vc.view、自定义视图等
+         ///   - contentView: 自定义的弹框视图
+         ///   - animator: 遵从协议TbPopupViewAnimationProtocol的动画驱动器
         super.init(frame: containerView.bounds)
 
         backgroundView.isUserInteractionEnabled = isDismissible
@@ -152,6 +180,16 @@ class TbPopupView: UIView {
     
 }
 
+extension UIView {
+    /// 便利获取TbPopupView
+    var tb_popupView: TbPopupView? {
+        if self.superview?.isKind(of: TbPopupView.classForCoder()) == true {
+            return self.superview as? TbPopupView
+        }
+        return nil
+    }
+}
+
 
 class TbBackgroundView: UIControl {
    
@@ -166,6 +204,7 @@ class TbBackgroundView: UIControl {
            refreshBackgroundStyle()
         }
     }
+    /// 无论style是什么值，color都会生效。如果你使用blur的时候，觉得叠加上该color过于黑暗时，可以置为clearColor。
     var color = UIColor.black.withAlphaComponent(0.3){
         didSet {
             backgroundColor = color
@@ -380,7 +419,7 @@ open class TbPopupViewFadeInOutAnimator: TbPopupViewBaseAnimator {
     }
 }
 
-class JXPopupViewSpringDownwardAnimator: TbPopupViewDownwardAnimator {
+class TbPopupViewSpringDownwardAnimator: TbPopupViewDownwardAnimator {
 
     override func display(contentView: UIView, backgroundView: TbBackgroundView, animated: Bool, completion: @escaping () -> ()) {
         if animated {
