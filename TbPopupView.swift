@@ -41,64 +41,9 @@ public enum TbPopupViewBackgroundStyle {
     case blur
 }
 
-class TbBackgroundView: UIControl {
-   
-    public var style = TbPopupViewBackgroundStyle.solidColor {
-        didSet {
-            refreshBackgroundStyle()
-        }
-    }
-    
-    public var blurEffectStyle = UIBlurEffect.Style.dark {
-        didSet {
-           refreshBackgroundStyle()
-        }
-    }
-    var color = UIColor.black.withAlphaComponent(0.3){
-        didSet {
-            backgroundColor = color
-        }
-    }
-    
-    var effectView: UIVisualEffectView?
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        refreshBackgroundStyle()
-        backgroundColor = color
-        layer.allowsGroupOpacity = false
-    }
-    
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let view = super.hitTest(point, with: event)
-        if view == effectView {
-            // 将event交给backgroundView处理
-            return self
-        }
-        return view
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        effectView?.frame = self.bounds
-    }
-    
-    func refreshBackgroundStyle(){
-        if style == .solidColor {
-            effectView?.removeFromSuperview()
-            effectView = nil
-        } else {
-            effectView = UIVisualEffectView(effect: UIBlurEffect(style: self.blurEffectStyle))
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-   
-}
-
+/// 一个轻量级的自定义视图弹框框架，主要提供动画、背景的灵活配置，功能简单却强大
+/// 通过面对协议JXPopupViewAnimationProtocol，实现对动画的灵活配置
+/// 通过JXBackgroundView对背景进行自定义配置
 class TbPopupView: UIView {
 
     public var isDismissible = false {
@@ -203,6 +148,64 @@ class TbPopupView: UIView {
     
     @objc func backgroundViewClicked(){
         dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+
+class TbBackgroundView: UIControl {
+   
+    public var style = TbPopupViewBackgroundStyle.solidColor {
+        didSet {
+            refreshBackgroundStyle()
+        }
+    }
+    
+    public var blurEffectStyle = UIBlurEffect.Style.dark {
+        didSet {
+           refreshBackgroundStyle()
+        }
+    }
+    var color = UIColor.black.withAlphaComponent(0.3){
+        didSet {
+            backgroundColor = color
+        }
+    }
+    
+    var effectView: UIVisualEffectView?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        refreshBackgroundStyle()
+        backgroundColor = color
+        layer.allowsGroupOpacity = false
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        if view == effectView {
+            // 将event交给backgroundView处理
+            return self
+        }
+        return view
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        effectView?.frame = self.bounds
+    }
+    
+    func refreshBackgroundStyle(){
+        if style == .solidColor {
+            effectView?.removeFromSuperview()
+            effectView = nil
+        } else {
+            effectView = UIVisualEffectView(effect: UIBlurEffect(style: self.blurEffectStyle))
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 }
